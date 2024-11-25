@@ -1,5 +1,6 @@
 package com.bez.newsfeedtabs.ui.screen_info
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,8 +15,8 @@ class ScreenAViewModel @Inject constructor(
     private val loadLastNewsClickedUC: LoadLastNewsClickedUC
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> get() = _uiState
+    private val _uiState = MutableStateFlow(ScreenAUiState())
+    val uiState: StateFlow<ScreenAUiState> get() = _uiState
 
     init {
         loadUserInfo()
@@ -43,9 +44,10 @@ class ScreenAViewModel @Inject constructor(
         }
     }
 
-    data class UiState(
-        val userName: String = "",
-        val lastEntryTime: String = "",
+    @Immutable
+    data class ScreenAUiState(
+        val userName: String = "User",
+        val lastEntryTime: String = "Unknown",
         val lastClickedNewsTitle: String? = null
     )
 }
