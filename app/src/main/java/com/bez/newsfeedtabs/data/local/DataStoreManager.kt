@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.utils
+package com.bez.newsfeedtabs.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore

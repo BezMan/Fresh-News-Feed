@@ -1,8 +1,8 @@
-package com.bez.newsfeedtabs.data
+package com.bez.newsfeedtabs.data.di
 
-import com.bez.newsfeedtabs.data.api.NewsService
-import com.bez.newsfeedtabs.data.repo.EntertainmentNewsRepositoryImpl
-import com.bez.newsfeedtabs.domain.repo.EntertainmentNewsRepository
+import com.bez.newsfeedtabs.data.network.NewsService
+import com.bez.newsfeedtabs.ui.screen_news.repo.EntertainmentNewsRepositoryImpl
+import com.bez.newsfeedtabs.data.repo.EntertainmentNewsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

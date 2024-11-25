@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.domain.repo
+package com.bez.newsfeedtabs.data.repo
 
 import com.bez.newsfeedtabs.domain.model.NewsItem
 

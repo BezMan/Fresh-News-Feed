@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.ui.screen_news.ui
+package com.bez.newsfeedtabs.ui.screen_news.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.bez.newsfeedtabs.domain.model.NewsItem
 import com.bez.newsfeedtabs.domain.model.ResponseState
-import com.bez.newsfeedtabs.ui.navigation.NavigationUtils
+import com.bez.newsfeedtabs.navigation.NavigationUtils
 
 @Composable
 fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {

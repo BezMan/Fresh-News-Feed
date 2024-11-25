@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.ui.screen_info
+package com.bez.newsfeedtabs.ui.screen_info.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

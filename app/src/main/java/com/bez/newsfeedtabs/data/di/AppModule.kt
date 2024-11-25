@@ -1,8 +1,8 @@
-package com.bez.newsfeedtabs.di
+package com.bez.newsfeedtabs.data.di
 
 import android.app.Application
 import android.content.Context
-import com.bez.newsfeedtabs.utils.DataStoreManager
+import com.bez.newsfeedtabs.data.local.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object HiltModule {
+object AppModule {
 
     @Provides
     @Singleton

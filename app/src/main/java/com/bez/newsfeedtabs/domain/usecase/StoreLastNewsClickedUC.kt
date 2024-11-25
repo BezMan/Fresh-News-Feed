@@ -1,6 +1,6 @@
-package com.bez.newsfeedtabs.ui.screen_news.usecase
+package com.bez.newsfeedtabs.domain.usecase
 
-import com.bez.newsfeedtabs.utils.DataStoreManager
+import com.bez.newsfeedtabs.data.local.DataStoreManager
 import javax.inject.Inject
 
 class StoreLastNewsClickedUC @Inject constructor(private val dataStoreManager: DataStoreManager) {

@@ -1,11 +1,11 @@
-package com.bez.newsfeedtabs.ui.navigation
+package com.bez.newsfeedtabs.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.bez.newsfeedtabs.ui.screen_info.ScreenA
-import com.bez.newsfeedtabs.ui.screen_news.ui.ScreenB
+import com.bez.newsfeedtabs.ui.screen_info.presentation.ScreenA
+import com.bez.newsfeedtabs.ui.screen_news.presentation.ScreenB
 
 @Composable
 fun AppNavigation() {

@@ -1,8 +1,10 @@
-package com.bez.newsfeedtabs.ui.screen_info
+package com.bez.newsfeedtabs.ui.screen_info.presentation
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bez.newsfeedtabs.domain.usecase.GetUserInfoUC
+import com.bez.newsfeedtabs.domain.usecase.LoadLastNewsClickedUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

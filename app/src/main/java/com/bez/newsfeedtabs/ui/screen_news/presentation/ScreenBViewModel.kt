@@ -1,12 +1,11 @@
-package com.bez.newsfeedtabs.ui.screen_news.ui
+package com.bez.newsfeedtabs.ui.screen_news.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bez.newsfeedtabs.domain.model.NewsItem
 import com.bez.newsfeedtabs.domain.model.ResponseState
-import com.bez.newsfeedtabs.ui.screen_news.usecase.FetchCarsNewsUseCase
-import com.bez.newsfeedtabs.ui.screen_news.usecase.FetchEntertainmentNewsPart1UseCase
-import com.bez.newsfeedtabs.ui.screen_news.usecase.FetchEntertainmentNewsPart2UseCase
+import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentNewsPart1UseCase
+import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentNewsPart2UseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

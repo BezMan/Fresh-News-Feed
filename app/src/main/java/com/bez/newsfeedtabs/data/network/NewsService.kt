@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.data.api
+package com.bez.newsfeedtabs.data.network
 
 import com.bez.newsfeedtabs.domain.model.NewsFeed
 import retrofit2.http.GET

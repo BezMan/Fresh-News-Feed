@@ -1,4 +1,4 @@
-package com.bez.newsfeedtabs.ui.navigation
+package com.bez.newsfeedtabs.navigation
 
 import android.content.Context
 import android.content.Intent

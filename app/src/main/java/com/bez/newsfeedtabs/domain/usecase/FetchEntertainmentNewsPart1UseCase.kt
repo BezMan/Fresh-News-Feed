@@ -1,7 +1,7 @@
-package com.bez.newsfeedtabs.ui.screen_news.usecase
+package com.bez.newsfeedtabs.domain.usecase
 
 import com.bez.newsfeedtabs.domain.model.NewsItem
-import com.bez.newsfeedtabs.domain.repo.EntertainmentNewsRepository
+import com.bez.newsfeedtabs.data.repo.EntertainmentNewsRepository
 import javax.inject.Inject
 
 class FetchEntertainmentNewsPart1UseCase @Inject constructor(

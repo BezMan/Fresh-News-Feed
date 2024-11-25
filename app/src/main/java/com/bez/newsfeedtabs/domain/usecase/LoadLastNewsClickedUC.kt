@@ -1,6 +1,6 @@
-package com.bez.newsfeedtabs.ui.screen_info
+package com.bez.newsfeedtabs.domain.usecase
 
-import com.bez.newsfeedtabs.utils.DataStoreManager
+import com.bez.newsfeedtabs.data.local.DataStoreManager
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
