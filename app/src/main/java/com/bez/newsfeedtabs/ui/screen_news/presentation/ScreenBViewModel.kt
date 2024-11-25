@@ -9,7 +9,6 @@ import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentPart2UC
 import com.bez.newsfeedtabs.domain.usecase.StoreLastNewsClickedUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,8 +28,7 @@ class ScreenBViewModel @Inject constructor(
         MutableStateFlow<ResponseState<List<NewsItem>>>(ResponseState.Loading)
     val entertainmentNewsState: StateFlow<ResponseState<List<NewsItem>>> = _entertainmentNewsState
 
-    val itemsList: MutableList<NewsItem> = mutableListOf()
-
+    private val itemsList: MutableList<NewsItem> = mutableListOf()
 
     private var fetchJob: Job? = null
     private val mutex = Mutex() // Mutex to control access to the list
@@ -59,23 +57,19 @@ class ScreenBViewModel @Inject constructor(
 
 
         try {
+            // Launch both fetch operations concurrently
             viewModelScope.launch {
-                val part1Deferred = async {
-                    //for testing async
-//                    delay(400)
+                //for testing async
+                    delay(400)
+                val part1 = fetchEntertainmentPart1UC()
+                updateStateWithPart1(part1)
+            }
 
-                    fetchEntertainmentPart1UC()
-                }
-                val part1Result = part1Deferred.await()
-                updateStateWithPart1(part1Result)
-            }
             viewModelScope.launch {
-                val part2Deferred = async {
-                    fetchEntertainmentPart2UC()
-                }
-                val part2Result = part2Deferred.await()
-                updateStateWithPart2(part2Result)
+                val part2 = fetchEntertainmentPart2UC()
+                updateStateWithPart2(part2)
             }
+
         } catch (e: Exception) {
             _entertainmentNewsState.value =
                 ResponseState.Error("Failed to fetch Entertainment news: ${e.localizedMessage}")
