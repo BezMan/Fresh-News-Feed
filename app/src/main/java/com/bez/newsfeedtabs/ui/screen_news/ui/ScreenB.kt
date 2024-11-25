@@ -1,8 +1,10 @@
 package com.bez.newsfeedtabs.ui.screen_news.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,47 +33,53 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
     val allNews by viewModel.allNews.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    // Show loading indicator while fetching
-    if (isLoading) {
-        CircularProgressIndicator()
-    }
+    // Wrap the entire content in a Box to overlay the CircularProgressIndicator
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.padding(16.dp)) {
 
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
-        // Show Cars news
-        when (carsNewsState) {
-            is ResponseState.Loading -> {
-                item { Text("Loading Cars News...") }
+            // Show Cars news
+            when (carsNewsState) {
+                is ResponseState.Loading -> {
+                    item { Text("Loading Cars News...") }
+                }
+                is ResponseState.Success -> {
+                    items((carsNewsState as ResponseState.Success).data) { newsItem ->
+                        NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
+                    }
+                }
+                is ResponseState.Error -> {
+                    item { Text("Error loading Cars news: ${(carsNewsState as ResponseState.Error).message}") }
+                }
             }
-            is ResponseState.Success -> {
-                items((carsNewsState as ResponseState.Success).data) { newsItem ->
+
+            // Show Entertainment news
+            when (entertainmentNewsState) {
+                is ResponseState.Loading -> {
+                    item { Text("Loading Entertainment News...") }
+                }
+                is ResponseState.Success -> {
+                    items((entertainmentNewsState as ResponseState.Success).data) { newsItem ->
+                        NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
+                    }
+                }
+                is ResponseState.Error -> {
+                    item { Text("Error loading Entertainment news: ${(entertainmentNewsState as ResponseState.Error).message}") }
+                }
+            }
+
+            // Show all news combined at the end
+            if (allNews.isNotEmpty()) {
+                items(allNews) { newsItem ->
                     NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
                 }
             }
-            is ResponseState.Error -> {
-                item { Text("Error loading Cars news: ${(carsNewsState as ResponseState.Error).message}") }
-            }
         }
 
-        // Show Entertainment news
-        when (entertainmentNewsState) {
-            is ResponseState.Loading -> {
-                item { Text("Loading Entertainment News...") }
-            }
-            is ResponseState.Success -> {
-                items((entertainmentNewsState as ResponseState.Success).data) { newsItem ->
-                    NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
-                }
-            }
-            is ResponseState.Error -> {
-                item { Text("Error loading Entertainment news: ${(entertainmentNewsState as ResponseState.Error).message}") }
-            }
-        }
-
-        // Show all news combined at the end
-        if (allNews.isNotEmpty()) {
-            items(allNews) { newsItem ->
-                NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
-            }
+        // Show loading indicator centered over the content when data is being fetched
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }
@@ -80,13 +88,17 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
 fun NewsItemView(newsItem: NewsItem, onClick: (NewsItem) -> Unit) {
     val context = LocalContext.current
 
+    // Card that displays the news item
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
                 onClick(newsItem)
-                NavigationUtils.openWebLink(context, newsItem.link) // Open the web link
+                val url = newsItem.link
+                url?.let {
+                    NavigationUtils.openWebLink(context, url) // Open the web link
+                }
             },
     ) {
         Row(
@@ -94,7 +106,7 @@ fun NewsItemView(newsItem: NewsItem, onClick: (NewsItem) -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = newsItem.title, style = MaterialTheme.typography.bodyLarge)
+                Text(text = newsItem.title ?: "no title", style = MaterialTheme.typography.bodyLarge)
                 Text(
                     text = newsItem.description ?: "No description available",
                     style = MaterialTheme.typography.bodySmall,
@@ -105,5 +117,3 @@ fun NewsItemView(newsItem: NewsItem, onClick: (NewsItem) -> Unit) {
         }
     }
 }
-
-

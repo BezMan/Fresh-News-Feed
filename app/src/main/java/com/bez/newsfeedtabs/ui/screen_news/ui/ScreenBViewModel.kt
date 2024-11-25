@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScreenBViewModel @Inject constructor(
-    private val fetchCarsNewsUseCase: FetchCarsNewsUseCase,
+//    private val fetchCarsNewsUseCase: FetchCarsNewsUseCase,
     private val fetchEntertainmentNewsPart1UseCase: FetchEntertainmentNewsPart1UseCase,
     private val fetchEntertainmentNewsPart2UseCase: FetchEntertainmentNewsPart2UseCase,
 //    private val saveClickedNewsTitleUseCase: SaveClickedNewsTitleUseCase
@@ -64,18 +64,25 @@ class ScreenBViewModel @Inject constructor(
         _carsNewsState.value = ResponseState.Loading
         _entertainmentNewsState.value = ResponseState.Loading
 
-        try {
-            // Fetch Cars news
-            val carsNews = fetchCarsNewsUseCase()
-            // Update state to success after fetching
-            _carsNewsState.value = ResponseState.Success(carsNews)
+        _isLoading.value = true
 
-            // Lock the mutex before updating the list
-            mutex.withLock {
-                _allNews.update { currentList ->
-                    currentList + carsNews // Append Cars items to the list
-                }
-            }
+        //for testing Loading state
+//        delay(2000)
+
+
+
+        try {
+//            // Fetch Cars news
+//            val carsNews = fetchCarsNewsUseCase()
+//            // Update state to success after fetching
+//            _carsNewsState.value = ResponseState.Success(carsNews)
+//
+//            // Lock the mutex before updating the list
+//            mutex.withLock {
+//                _allNews.update { currentList ->
+//                    currentList + carsNews // Append Cars items to the list
+//                }
+//            }
 
             // Fetch Entertainment news
             val entertainmentNewsPart1 = fetchEntertainmentNewsPart1UseCase()
