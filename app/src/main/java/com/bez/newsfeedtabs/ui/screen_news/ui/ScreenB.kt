@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,6 +23,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.bez.newsfeedtabs.domain.model.NewsItem
 import com.bez.newsfeedtabs.domain.model.ResponseState
 import com.bez.newsfeedtabs.ui.navigation.NavigationUtils
@@ -32,6 +36,24 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
     val entertainmentNewsState by viewModel.entertainmentNewsState.collectAsState()
     val allNews by viewModel.allNews.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+
+    // Observe the lifecycle and handle onStop event (e.g., Home button click)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                viewModel.stopFetching()
+            }
+            if (event == Lifecycle.Event.ON_START) {
+                viewModel.startFetchingNewsPeriodically() // Optional: restart fetching if needed
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     // Wrap the entire content in a Box to overlay the CircularProgressIndicator
     Box(modifier = Modifier.fillMaxSize()) {

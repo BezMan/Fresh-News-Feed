@@ -41,12 +41,9 @@ class ScreenBViewModel @Inject constructor(
     private var fetchJob: Job? = null
     private val mutex = Mutex() // Mutex to control access to the list
 
-    init {
-        startFetchingNewsPeriodically()
-    }
-
     // Start fetching news every 5 seconds
-    private fun startFetchingNewsPeriodically() {
+    internal fun startFetchingNewsPeriodically() {
+        if (fetchJob?.isActive == true) return // Avoid restarting if already active
         _isLoading.value = true
         fetchJob = viewModelScope.launch {
             while (true) {
@@ -115,9 +112,14 @@ class ScreenBViewModel @Inject constructor(
         }
     }
 
+    // Stop the periodic fetch job
+    fun stopFetching() {
+        fetchJob?.cancel()
+    }
+
     // Cleanup job when view model is cleared
     override fun onCleared() {
         super.onCleared()
-        fetchJob?.cancel() // Cancel the periodic fetch when ViewModel is cleared
+        stopFetching()
     }
 }
