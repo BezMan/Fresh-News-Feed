@@ -32,10 +32,8 @@ import com.bez.newsfeedtabs.navigation.NavigationUtils
 
 @Composable
 fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
-    val carsNewsState by viewModel.carsNewsState.collectAsState()
+
     val entertainmentNewsState by viewModel.entertainmentNewsState.collectAsState()
-    val allNews by viewModel.allNews.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
 
     // Observe the lifecycle and handle onStop event (e.g., Home button click)
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -59,21 +57,6 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.padding(16.dp)) {
 
-            // Show Cars news
-            when (carsNewsState) {
-                is ResponseState.Loading -> {
-                    item { Text("Loading Cars News...") }
-                }
-                is ResponseState.Success -> {
-                    items((carsNewsState as ResponseState.Success).data) { newsItem ->
-                        NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
-                    }
-                }
-                is ResponseState.Error -> {
-                    item { Text("Error loading Cars news: ${(carsNewsState as ResponseState.Error).message}") }
-                }
-            }
-
             // Show Entertainment news
             when (entertainmentNewsState) {
                 is ResponseState.Loading -> {
@@ -89,16 +72,10 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
                 }
             }
 
-            // Show all news combined at the end
-            if (allNews.isNotEmpty()) {
-                items(allNews) { newsItem ->
-                    NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
-                }
-            }
         }
 
         // Show loading indicator centered over the content when data is being fetched
-        if (isLoading) {
+        if (entertainmentNewsState is ResponseState.Loading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
             )

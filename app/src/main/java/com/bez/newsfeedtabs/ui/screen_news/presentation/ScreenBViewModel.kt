@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bez.newsfeedtabs.domain.model.NewsItem
 import com.bez.newsfeedtabs.domain.model.ResponseState
-import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentNewsPart1UseCase
-import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentNewsPart2UseCase
+import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentPart1UC
+import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentPart2UC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -19,23 +19,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScreenBViewModel @Inject constructor(
-//    private val fetchCarsNewsUseCase: FetchCarsNewsUseCase,
-    private val fetchEntertainmentNewsPart1UseCase: FetchEntertainmentNewsPart1UseCase,
-    private val fetchEntertainmentNewsPart2UseCase: FetchEntertainmentNewsPart2UseCase,
+    private val fetchEntertainmentPart1UC: FetchEntertainmentPart1UC,
+    private val fetchEntertainmentPart2UC: FetchEntertainmentPart2UC,
 //    private val saveClickedNewsTitleUseCase: SaveClickedNewsTitleUseCase
 ) : ViewModel() {
 
-    private val _carsNewsState = MutableStateFlow<ResponseState<List<NewsItem>>>(ResponseState.Loading)
-    val carsNewsState: StateFlow<ResponseState<List<NewsItem>>> = _carsNewsState
-
-    private val _entertainmentNewsState = MutableStateFlow<ResponseState<List<NewsItem>>>(ResponseState.Loading)
+    private val _entertainmentNewsState =
+        MutableStateFlow<ResponseState<List<NewsItem>>>(ResponseState.Loading)
     val entertainmentNewsState: StateFlow<ResponseState<List<NewsItem>>> = _entertainmentNewsState
 
-    private val _allNews = MutableStateFlow<List<NewsItem>>(emptyList())
-    val allNews: StateFlow<List<NewsItem>> = _allNews
+    val list: MutableList<NewsItem> = mutableListOf()
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading
 
     private var fetchJob: Job? = null
     private val mutex = Mutex() // Mutex to control access to the list
@@ -43,7 +37,6 @@ class ScreenBViewModel @Inject constructor(
     // Start fetching news every 5 seconds
     internal fun startFetchingNewsPeriodically() {
         if (fetchJob?.isActive == true) return // Avoid restarting if already active
-        _isLoading.value = true
         fetchJob = viewModelScope.launch {
             while (true) {
                 fetchCarsAndEntertainmentNews()
@@ -57,51 +50,50 @@ class ScreenBViewModel @Inject constructor(
     // Fetch Cars and Entertainment News sequentially using Mutex to avoid overwriting
     private suspend fun fetchCarsAndEntertainmentNews() {
         // Update the states to loading first
-        _carsNewsState.value = ResponseState.Loading
         _entertainmentNewsState.value = ResponseState.Loading
-
-        _isLoading.value = true
 
         //for testing Loading state
 //        delay(2000)
 
 
-
         try {
-//            // Fetch Cars news
-//            val carsNews = fetchCarsNewsUseCase()
-//            // Update state to success after fetching
-//            _carsNewsState.value = ResponseState.Success(carsNews)
-//
-//            // Lock the mutex before updating the list
-//            mutex.withLock {
-//                _allNews.update { currentList ->
-//                    currentList + carsNews // Append Cars items to the list
-//                }
-//            }
+            viewModelScope.launch {
+                val part1Deferred = async {
+                    //for testing async
+//                    delay(400)
 
-            // Fetch Entertainment news
-            val entertainmentNewsPart1 = fetchEntertainmentNewsPart1UseCase()
-            val entertainmentNewsPart2 = fetchEntertainmentNewsPart2UseCase()
-            val entertainmentNews = entertainmentNewsPart1 + entertainmentNewsPart2
-            // Update state to success after fetching
-            _entertainmentNewsState.value = ResponseState.Success(entertainmentNews)
-
-            // Lock the mutex before updating the list
-            mutex.withLock {
-                _allNews.update { currentList ->
-                    currentList + entertainmentNews // Append Entertainment items to the list
+                    fetchEntertainmentPart1UC()
                 }
+                val part1Result = part1Deferred.await()
+                updateStateWithPart1(part1Result)
             }
-
+            viewModelScope.launch {
+                val part2Deferred = async {
+                    fetchEntertainmentPart2UC()
+                }
+                val part2Result = part2Deferred.await()
+                updateStateWithPart2(part2Result)
+            }
         } catch (e: Exception) {
-            // If error occurs, update state to Error
-            _carsNewsState.value = ResponseState.Error("Failed to fetch Cars news: ${e.localizedMessage}")
-            _entertainmentNewsState.value = ResponseState.Error("Failed to fetch Entertainment news: ${e.localizedMessage}")
+            _entertainmentNewsState.value =
+                ResponseState.Error("Failed to fetch Entertainment news: ${e.localizedMessage}")
         }
+    }
 
-        // Stop loading once the fetch operations are complete
-        _isLoading.value = false
+    // Update state with part 1 (add to the start of the list)
+    private suspend fun updateStateWithPart1(part1: List<NewsItem>) {
+        mutex.withLock {
+            list.addAll(0, part1) // Add part1 to the start of the list
+            _entertainmentNewsState.value = ResponseState.Success(list) // Update state immediately
+        }
+    }
+
+    // Update state with part 2 (add to the end of the list)
+    private suspend fun updateStateWithPart2(part2: List<NewsItem>) {
+        mutex.withLock {
+            list.addAll(part2) // Add part2 to the end of the list
+            _entertainmentNewsState.value = ResponseState.Success(list) // Update state immediately
+        }
     }
 
     // Handle news item click (save title to DataStore)
