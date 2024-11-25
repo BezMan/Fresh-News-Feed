@@ -30,7 +30,7 @@ fun ScreenA(onNavigateToScreenB: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Name: ${uiState.userName}", style = MaterialTheme.typography.bodyLarge)
-        Text(text = "Last Entry: ${uiState.lastEntryTime}", style = MaterialTheme.typography.bodyLarge)
+//        Text(text = "Last Entry: ${uiState.lastEntryTime}", style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Last News Clicked: ${uiState.lastClickedNewsTitle ?: "None"}",

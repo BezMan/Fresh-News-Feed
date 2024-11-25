@@ -6,6 +6,7 @@ import com.bez.newsfeedtabs.domain.model.NewsItem
 import com.bez.newsfeedtabs.domain.model.ResponseState
 import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentPart1UC
 import com.bez.newsfeedtabs.domain.usecase.FetchEntertainmentPart2UC
+import com.bez.newsfeedtabs.domain.usecase.StoreLastNewsClickedUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class ScreenBViewModel @Inject constructor(
     private val fetchEntertainmentPart1UC: FetchEntertainmentPart1UC,
     private val fetchEntertainmentPart2UC: FetchEntertainmentPart2UC,
-//    private val saveClickedNewsTitleUseCase: SaveClickedNewsTitleUseCase
+    private val storeLastNewsClickedUC: StoreLastNewsClickedUC
 ) : ViewModel() {
 
     private val _entertainmentNewsState =
@@ -100,7 +101,7 @@ class ScreenBViewModel @Inject constructor(
     // Handle news item click (save title to DataStore)
     fun onNewsItemClicked(newsItem: NewsItem) {
         viewModelScope.launch {
-//            saveClickedNewsTitleUseCase(newsItem.title)
+            storeLastNewsClickedUC.execute(newsItem.title ?: "undefined title")
         }
     }
 

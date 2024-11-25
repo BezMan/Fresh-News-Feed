@@ -38,7 +38,7 @@ class DataStoreManager @Inject constructor(context: Context) {
     val userInfoFlow: Flow<UserInfo> = dataStore.data
         .map { preferences ->
             UserInfo(
-                userName = preferences[PreferencesKeys.userName] ?: "Unknown",
+                userName = preferences[PreferencesKeys.userName] ?: "Joe Silver",
                 lastEntryTime = preferences[PreferencesKeys.lastEntryTime] ?: "Not available"
             )
         }
