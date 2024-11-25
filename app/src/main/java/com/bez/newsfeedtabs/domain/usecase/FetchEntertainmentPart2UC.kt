@@ -8,6 +8,6 @@ class FetchEntertainmentPart2UC @Inject constructor(
     private val repository: EntertainmentNewsRepository
 ) {
     suspend operator fun invoke(): List<NewsItem> {
-        return repository.fetchEntertainmentNewsPart1()
+        return repository.fetchEntertainmentNewsPart2()
     }
 }

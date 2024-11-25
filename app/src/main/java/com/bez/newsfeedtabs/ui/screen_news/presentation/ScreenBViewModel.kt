@@ -28,7 +28,7 @@ class ScreenBViewModel @Inject constructor(
         MutableStateFlow<ResponseState<List<NewsItem>>>(ResponseState.Loading)
     val entertainmentNewsState: StateFlow<ResponseState<List<NewsItem>>> = _entertainmentNewsState
 
-    val list: MutableList<NewsItem> = mutableListOf()
+    val itemsList: MutableList<NewsItem> = mutableListOf()
 
 
     private var fetchJob: Job? = null
@@ -49,6 +49,7 @@ class ScreenBViewModel @Inject constructor(
 
     // Fetch Cars and Entertainment News sequentially using Mutex to avoid overwriting
     private suspend fun fetchCarsAndEntertainmentNews() {
+        itemsList.clear()
         // Update the states to loading first
         _entertainmentNewsState.value = ResponseState.Loading
 
@@ -83,16 +84,16 @@ class ScreenBViewModel @Inject constructor(
     // Update state with part 1 (add to the start of the list)
     private suspend fun updateStateWithPart1(part1: List<NewsItem>) {
         mutex.withLock {
-            list.addAll(0, part1) // Add part1 to the start of the list
-            _entertainmentNewsState.value = ResponseState.Success(list) // Update state immediately
+            itemsList.addAll(0, part1) // Add part1 to the start of the list
+            _entertainmentNewsState.value = ResponseState.Success(itemsList) // Update state immediately
         }
     }
 
     // Update state with part 2 (add to the end of the list)
     private suspend fun updateStateWithPart2(part2: List<NewsItem>) {
         mutex.withLock {
-            list.addAll(part2) // Add part2 to the end of the list
-            _entertainmentNewsState.value = ResponseState.Success(list) // Update state immediately
+            itemsList.addAll(part2) // Add part2 to the end of the list
+            _entertainmentNewsState.value = ResponseState.Success(itemsList) // Update state immediately
         }
     }
 

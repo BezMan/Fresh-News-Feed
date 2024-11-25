@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -53,8 +52,8 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
         }
     }
 
-    // Wrap the entire content in a Box to overlay the CircularProgressIndicator
-    Box(modifier = Modifier.fillMaxSize()) {
+    // Wrap the entire screen in a Box for overlaying the loading indicator
+    Box() {
         LazyColumn(modifier = Modifier.padding(16.dp)) {
 
             // Show Entertainment news
