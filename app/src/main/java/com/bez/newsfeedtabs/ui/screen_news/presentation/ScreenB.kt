@@ -63,7 +63,9 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
                 }
                 is ResponseState.Success -> {
                     items((entertainmentNewsState as ResponseState.Success).data) { newsItem ->
-                        NewsItemView(newsItem = newsItem, onClick = { viewModel.onNewsItemClicked(newsItem) })
+                        NewsItemView(
+                            newsItem = newsItem,
+                            onItemClick = { viewModel.onNewsItemClicked(newsItem) })
                     }
                 }
                 is ResponseState.Error -> {
@@ -83,7 +85,7 @@ fun ScreenB(viewModel: ScreenBViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun NewsItemView(newsItem: NewsItem, onClick: (NewsItem) -> Unit) {
+fun NewsItemView(newsItem: NewsItem, onItemClick: (NewsItem) -> Unit) {
     val context = LocalContext.current
 
     // Card that displays the news item
@@ -92,10 +94,10 @@ fun NewsItemView(newsItem: NewsItem, onClick: (NewsItem) -> Unit) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                onClick(newsItem)
-                val url = newsItem.link
-                url?.let {
-                    NavigationUtils.openWebLink(context, url) // Open the web link
+                onItemClick(newsItem)
+
+                newsItem.link?.let {
+                    NavigationUtils.openWebLink(context, it) // Open the web link
                 }
             },
     ) {

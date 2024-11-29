@@ -60,7 +60,7 @@ class ScreenBViewModel @Inject constructor(
             // Launch both fetch operations concurrently
             viewModelScope.launch {
                 //for testing async
-                    delay(400)
+//                    delay(400)
                 val part1 = fetchEntertainmentPart1UC()
                 updateStateWithPart1(part1)
             }

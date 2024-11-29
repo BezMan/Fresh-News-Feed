@@ -46,7 +46,6 @@ class ScreenAViewModel @Inject constructor(
         }
     }
 
-    @Immutable
     data class ScreenAUiState(
         val userName: String = "User",
         val lastEntryTime: String = "Unknown",
