@@ -7,8 +7,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 
@@ -17,8 +15,6 @@ class FetchEntertainmentUC @Inject constructor(
     private val entertainmentRepoPart2: EntertainmentRepoPart2
 ) {
 
-    private val mutex = Mutex() // Ensure thread-safe updates
-
     fun fetchEntertainmentNews(): Flow<List<NewsItem>> = channelFlow {
         val itemsList = mutableListOf<NewsItem>()
 
@@ -26,13 +22,12 @@ class FetchEntertainmentUC @Inject constructor(
             try {
                 withTimeout(3000) {  // Timeout after x ms
                     val part1 = entertainmentRepoPart1.fetchEntertainmentNewsPart1()
-                    mutex.withLock {
 
-//                        delay(1500) //for testing purposes
+//                    delay(1500) //for testing purposes
 
-                        itemsList.addAll(0, part1) // Add Part 1 to the start of the list
-                        send(itemsList.toList()) // Send updated list
-                    }
+                    itemsList.addAll(0, part1) // Add Part 1 to the start of the list
+                    send(itemsList.toList()) // Send updated list
+
                 }
             } catch (e: TimeoutCancellationException) {
 //                throw Exception("Fetching Part 1 timed out", e)
@@ -45,13 +40,12 @@ class FetchEntertainmentUC @Inject constructor(
             try {
                 withTimeout(3000) {  // Timeout after x ms
                     val part2 = entertainmentRepoPart2.fetchEntertainmentNewsPart2()
-                    mutex.withLock {
 
-//                        delay(500) //for testing purposes
+//                    delay(500) //for testing purposes
 
-                        itemsList.addAll(part2) // Add Part 2 to the end of the list
-                        send(itemsList.toList()) // Send updated list
-                    }
+                    itemsList.addAll(part2) // Add Part 2 to the end of the list
+                    send(itemsList.toList()) // Send updated list
+
                 }
             } catch (e: TimeoutCancellationException) {
 //                throw Exception("Fetching Part 2 timed out", e)
