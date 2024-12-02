@@ -1,8 +1,10 @@
 package com.bez.newsfeedtabs.data.di
 
 import com.bez.newsfeedtabs.data.network.NewsService
-import com.bez.newsfeedtabs.ui.screen_news.repo.EntertainmentNewsRepositoryImpl
-import com.bez.newsfeedtabs.data.repo.EntertainmentNewsRepository
+import com.bez.newsfeedtabs.data.repo.EntertainmentRepoPart1
+import com.bez.newsfeedtabs.data.repo.EntertainmentRepoPart2
+import com.bez.newsfeedtabs.ui.screen_news.repo.EntertainmentRepoPart1Impl
+import com.bez.newsfeedtabs.ui.screen_news.repo.EntertainmentRepoPart2Impl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,8 +36,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideEntertainmentNewsRepository(api: NewsService): EntertainmentNewsRepository {
-        return EntertainmentNewsRepositoryImpl(api)
+    fun provideEntertainmentNewsPart1Repository(api: NewsService): EntertainmentRepoPart1 {
+        return EntertainmentRepoPart1Impl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEntertainmentNewsPart2Repository(api: NewsService): EntertainmentRepoPart2 {
+        return EntertainmentRepoPart2Impl(api)
     }
 
 }

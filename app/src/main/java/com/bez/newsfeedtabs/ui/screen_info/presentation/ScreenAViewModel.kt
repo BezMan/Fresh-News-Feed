@@ -1,6 +1,5 @@
 package com.bez.newsfeedtabs.ui.screen_info.presentation
 
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bez.newsfeedtabs.domain.usecase.GetUserInfoUC
